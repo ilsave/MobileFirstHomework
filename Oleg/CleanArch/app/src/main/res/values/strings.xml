@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CleanArchitectureShowcase</string>
+    <string name="stocks">Stocks</string>
+    <string name="favourite">Favourite</string>
+    <string name="search_hint">Find company or ticker</string>
+    <string name="popular_requests">Popular requests</string>
+    <string name="searched_for_this">You\'ve searched for this</string>
+    <string name="show_more">Show more</string>
+    <string name="chart">Chart</string>
+</resources>
