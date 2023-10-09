@@ -9,13 +9,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.cleanarchitectureshowcase.R
-import com.example.cleanarchitectureshowcase.features.home.data.StocksDTO
-import com.example.cleanarchitectureshowcase.features.home.data.StocksPictureDTO
+import com.example.cleanarchitectureshowcase.features.home.data.StockInfoDTO
+import com.example.cleanarchitectureshowcase.features.home.data.StockPictureDTO
 
 class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
 
-    private var stocks: List<StocksDTO> = listOf()
-    private var pics: List<StocksPictureDTO> = listOf()
+    private var stocks: List<StockInfoDTO> = listOf()
+    private var pics: List<StockPictureDTO> = listOf()
 
     class StocksHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val ticket: TextView = itemView.findViewById(R.id.tv_ticket)
@@ -39,7 +39,7 @@ class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
         with(holder) {
             Glide.with(context)
                 .load(pic.image)
-                .error(R.color.white)
+                .error(R.drawable.stock_placeholder)
                 .placeholder(R.color.white)
                 .into(stockPicture)
 
@@ -63,31 +63,23 @@ class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
         }
 
         val defaultColor = holder.itemView.background
-        if (position % 2 != 0) {
-            defaultColor.setTint(ContextCompat.getColor(context, R.color.white))
-        } else {
-            defaultColor.setTint(ContextCompat.getColor(context, R.color.bg_grey))
-        }
-        holder.itemView.background = defaultColor
+        val conditionColor = if (position % 2 == 0) R.color.bg_grey else R.color.white
+        val changesPercentageColor = if (item.changesPercentage < 0) R.color.red else R.color.green
 
-        if (item.changesPercentage < 0) {
-            holder.dayChangePercent.setTextColor(ContextCompat.getColor(context, R.color.red))
-        } else {
-            holder.dayChangePercent.setTextColor(ContextCompat.getColor(context, R.color.green))
-        }
-
+        defaultColor.setTint(ContextCompat.getColor(context, conditionColor))
+        holder.dayChangePercent.setTextColor(ContextCompat.getColor(context, changesPercentageColor))
     }
 
     override fun getItemCount(): Int {
         return stocks.size
     }
 
-    fun setItems(newItems: List<StocksDTO>) {
+    fun setItems(newItems: List<StockInfoDTO>) {
         stocks = newItems
         notifyDataSetChanged()
     }
 
-    fun setPics(newPics: List<StocksPictureDTO>) {
+    fun setPics(newPics: List<StockPictureDTO>) {
         pics = newPics
     }
 }

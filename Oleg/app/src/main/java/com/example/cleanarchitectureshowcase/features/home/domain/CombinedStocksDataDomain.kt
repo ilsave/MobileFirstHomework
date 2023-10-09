@@ -1,12 +1,12 @@
 package com.example.cleanarchitectureshowcase.features.home.domain
 
-import com.example.cleanarchitectureshowcase.features.home.data.StocksDTO
-import com.example.cleanarchitectureshowcase.features.home.data.StocksPictureDTO
+import com.example.cleanarchitectureshowcase.features.home.data.StockInfoDTO
+import com.example.cleanarchitectureshowcase.features.home.data.StockPictureDTO
 import com.example.cleanarchitectureshowcase.features.home.presentation.StocksDataUI
 
 data class CombinedStocksDataDomain(
-    val stocksList: List<StocksDTO>,
-    val stockPictures: List<StocksPictureDTO>
+    val stocksList: List<StockInfoDTO>,
+    val stockPictures: List<StockPictureDTO>
 ) {
     fun toUI() = StocksDataUI(stocksList, stockPictures)
 }

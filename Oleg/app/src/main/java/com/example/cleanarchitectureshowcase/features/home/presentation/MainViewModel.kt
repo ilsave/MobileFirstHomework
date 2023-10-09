@@ -22,4 +22,15 @@ class MainViewModel @Inject constructor(
             state.value = result
         }
     }
+
+    fun activityCreated() {
+        getStocksData()
+    }
+
+    fun setDataInStocksAdapter(data: StocksDataUI, adapter: StocksAdapter) {
+        adapter.apply {
+            setItems(data.stocks)
+            setPics(data.pics)
+        }
+    }
 }

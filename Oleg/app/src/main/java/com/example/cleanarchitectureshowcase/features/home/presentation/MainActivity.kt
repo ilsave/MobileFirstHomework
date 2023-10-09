@@ -22,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stocksRVAdapter: StocksAdapter
     private lateinit var progressBarStocksRecyclerView: ProgressBar
 
+    //THIS IS TEMPORARY!!
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,14 +39,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.getStocksData()
+            viewModel.activityCreated()
             viewModel.state.collectLatest {data ->
-                if (data != null) {
-                    stocksRVAdapter.setItems(data.stocks)
-                    stocksRVAdapter.setPics(data.pics)
-                    progressBarStocksRecyclerView.visibility = View.GONE
+                data?.let {
+                    viewModel.setDataInStocksAdapter(data = data, adapter = stocksRVAdapter)
+                    hideProgressBar(progressBarStocksRecyclerView)
                 }
             }
         }
+    }
+
+    fun showProgressBar(progressBar: ProgressBar) {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgressBar(progressBar: ProgressBar) {
+        progressBar.visibility = View.GONE
     }
 }
