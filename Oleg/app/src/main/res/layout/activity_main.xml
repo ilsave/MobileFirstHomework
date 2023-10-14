@@ -5,27 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".features.home.presentation.MainActivity">
     
-    <EditText
-        android:id="@+id/et_search"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/search_marginHorizontal"
         android:layout_marginTop="@dimen/search_marginTop"
-        android:background="@drawable/et_search_style"
-        android:drawableStart="@drawable/search_icon"
-        android:drawablePadding="@dimen/search_drawablePadding"
-        android:fontFamily="@font/montserrat_600"
-        android:hint="@string/search_hint"
-        android:paddingVertical="@dimen/search_paddingVertical"
-        android:paddingStart="@dimen/search_paddingStart"
-        android:paddingEnd="@dimen/search_paddingEnd"
-        android:textColorHint="@color/black"
-        android:textSize="@dimen/search_textSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:endIconMode="clear_text"
+        app:endIconDrawable="@drawable/close_icon"
+        app:hintEnabled="false" >
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/et_search_style"
+            android:drawableStart="@drawable/search_icon"
+            android:searchIcon="@drawable/search_icon"
+            android:closeIcon="@drawable/close_icon"
+            app:searchIcon="@drawable/search_icon"
+            app:closeIcon="@drawable/close_icon"
+            app:goIcon="@drawable/back_icon"
+            android:drawablePadding="@dimen/search_drawablePadding"
+            android:fontFamily="@font/montserrat_600"
+            android:hint="@string/search_hint"
+            android:paddingVertical="12dp"
+            android:paddingStart="@dimen/search_paddingStart"
+            android:paddingEnd="@dimen/search_paddingEnd"
+            android:textColorHint="@color/black"
+            android:textSize="@dimen/search_textSize"
+             />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/tv_stocks"
@@ -38,7 +58,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/title_stocks_textSize"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_search" />
+        app:layout_constraintTop_toBottomOf="@+id/et_layout" />
 
     <TextView
         android:id="@+id/tv_favourite"
@@ -51,7 +71,7 @@
         android:textColor="@color/grey"
         android:textSize="@dimen/title_favourite_textSize"
         app:layout_constraintStart_toEndOf="@id/tv_stocks"
-        app:layout_constraintTop_toBottomOf="@id/et_search" />
+        app:layout_constraintTop_toBottomOf="@+id/et_layout" />
 
     <ProgressBar
         android:id="@+id/pb_rv_loading"

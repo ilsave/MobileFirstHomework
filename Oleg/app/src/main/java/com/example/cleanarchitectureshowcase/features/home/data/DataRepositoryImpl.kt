@@ -20,4 +20,9 @@ class DataRepositoryImpl(
         val response = api.getStockPicture(stock)
         return response
     }
+
+    override suspend fun getStocksByQuery(query: String, limit: Int, exchange: String): List<StockQueryDTO> {
+        val response = api.getStocksByQuery(query, limit, exchange)
+        return response
+    }
 }

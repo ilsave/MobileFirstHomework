@@ -14,6 +14,7 @@ import com.example.cleanarchitectureshowcase.features.home.data.StockPictureDTO
 
 class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
 
+    private var originalData: StocksDataUI? = null
     private var stocks: List<StockInfoDTO> = listOf()
     private var pics: List<StockPictureDTO> = listOf()
 
@@ -74,12 +75,21 @@ class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
         return stocks.size
     }
 
-    fun setItems(newItems: List<StockInfoDTO>) {
+    fun setItemsAndPics(newItems: List<StockInfoDTO>, newPics: List<StockPictureDTO>) {
         stocks = newItems
+        pics = newPics
         notifyDataSetChanged()
     }
 
-    fun setPics(newPics: List<StockPictureDTO>) {
-        pics = newPics
+    fun setOriginalData(data: StocksDataUI) {
+        originalData = data
+    }
+
+    fun retrieveOriginalData() {
+        originalData?.let {
+            stocks = it.stocks
+            pics = it.pics
+        }
+        notifyDataSetChanged()
     }
 }
