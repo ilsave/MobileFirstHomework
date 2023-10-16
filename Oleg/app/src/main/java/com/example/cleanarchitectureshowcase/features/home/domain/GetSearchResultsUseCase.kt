@@ -15,7 +15,7 @@ class GetSearchResultsUseCase @Inject constructor(
 
     override suspend fun invoke(params: String): StocksDataUI {
         val searchResults = CoroutineScope(Dispatchers.IO).async {
-            repository.getStocksByQuery(params, 5, "NASDAQ")
+            repository.getStocksByQuery(params, SEARCH_RESULTS_LIMIT, SEARCH_EXCHANGE)
         }.await()
 
         var searchResultsString = ""
@@ -30,15 +30,18 @@ class GetSearchResultsUseCase @Inject constructor(
             }
 
         val stocksPicturesDeferred =
-            coroutineScope {
-                async(Dispatchers.IO) {
-                    repository.getStockPicture(searchResultsString)
-                }
+            CoroutineScope(Dispatchers.IO).async {
+                repository.getStockPicture(searchResultsString)
             }
 
         val stocksData = stocksDataDeferred.await()
         val stocksPictures = stocksPicturesDeferred.await()
         val result = dataPreparationHelper.combineForUI(stocksData, stocksPictures)
         return result.toUI()
+    }
+
+    companion object {
+        const val SEARCH_RESULTS_LIMIT = 5
+        const val SEARCH_EXCHANGE = "NASDAQ"
     }
 }
