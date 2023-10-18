@@ -2,10 +2,8 @@ package com.example.cleanarchitectureshowcase.features.home.domain
 
 import com.example.cleanarchitectureshowcase.core.domain.CoroutinesUseCase
 import com.example.cleanarchitectureshowcase.features.home.presentation.StocksDataUI
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,18 +18,20 @@ class GetStocksDataUsecase @Inject constructor(
         }.await()
 
         val firstTenStocks = stocksList.subList(0, 10)
-        var firstTenStocksString = ""
-        for (element in firstTenStocks) {
-            firstTenStocksString = firstTenStocksString.plus(element.symbol).plus(',')
+        val firstTenStocksAsString =
+            firstTenStocks.map { it.symbol }.reduceOrNull { acc, value -> "$acc,$value" }
+
+        // if there are no stocks we return empty lists
+        if (firstTenStocksAsString.isNullOrEmpty()) {
+            return@withContext StocksDataUI(emptyList(), emptyList())
         }
-        firstTenStocksString = firstTenStocksString.dropLast(1)
 
         val stocksDataDeferred = async {
-            repository.getStockInfo(firstTenStocksString)
+            repository.getStockInfo(firstTenStocksAsString)
         }
 
         val stocksPicturesDeferred = async {
-            repository.getStockPicture(firstTenStocksString)
+            repository.getStockPicture(firstTenStocksAsString)
         }
         val stocksData = stocksDataDeferred.await()
         val stocksPictures = stocksPicturesDeferred.await()
