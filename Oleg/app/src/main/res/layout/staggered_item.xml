@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/staggered_custom_view_item_layout_height"
+    android:layout_marginEnd="@dimen/staggered_custom_view_item_layout_marginEnd"
+    android:layout_marginBottom="@dimen/staggered_custom_view_item_layout_marginBottom"
+    android:orientation="horizontal">
+    <TextView
+        android:background="@drawable/list_element_style"
+        android:id="@+id/tv_search_queue"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/staggered_custom_view_item_height"
+        android:paddingVertical="@dimen/staggered_custom_view_item_paddingVertical"
+        android:paddingHorizontal="@dimen/staggered_custom_view_item_paddingHorizontal"
+        android:fontFamily="@font/montserrat_600"
+        android:textSize="@dimen/staggered_custom_view_item_textSize"
+        tools:text="Apple" />
+
+</FrameLayout>

@@ -16,26 +16,30 @@ class GetStocksDataUsecase @Inject constructor(
         val stocksList = async {
             repository.getStocksList().filter { it.exchangeShortName == DEFAULT_EXCHANGE }.shuffled()
         }.await()
+        println("got getstockslist()")
 
         val firstTenStocks = stocksList.subList(0, 10)
+        println("got sublist(0 10)")
         val firstTenStocksAsString =
             firstTenStocks.map { it.symbol }.reduceOrNull { acc, value -> "$acc,$value" }
-
+        println("reduced")
         // if there are no stocks we return empty lists
         if (firstTenStocksAsString.isNullOrEmpty()) {
             return@withContext StocksDataUI(emptyList(), emptyList())
         }
-
+        println("check for null is complete")
         val stocksDataDeferred = async {
             repository.getStockInfo(firstTenStocksAsString)
         }
-
         val stocksPicturesDeferred = async {
             repository.getStockPicture(firstTenStocksAsString)
         }
         val stocksData = stocksDataDeferred.await()
+        println("awaited stocksdata")
         val stocksPictures = stocksPicturesDeferred.await()
+        println("awaited stockspictures")
         val stocks = dataPreparationHelper.combineForUI(stocksData, stocksPictures)
+        println("combined for ui")
         stocks.toUI()
     }
 

@@ -19,13 +19,15 @@ interface ServerDataApi {
         @Query("apikey") apikey: String = API_KEY
     ): List<StockInfoDTO>
 
+
+    // можно не делать этот запрос @TODO
     @GET("v3/profile/{tickerSymbol}")
     suspend fun getStockPicture(
         @Path("tickerSymbol") tickerSymbol: String,
         @Query("apikey") apikey: String = API_KEY
     ): List<StockPictureDTO>
 
-    @GET("v3/search-ticker")
+    @GET("v3/search")
     suspend fun getStocksByQuery(
         @Query("query") query: String,
         @Query("limit") limit: Int,
