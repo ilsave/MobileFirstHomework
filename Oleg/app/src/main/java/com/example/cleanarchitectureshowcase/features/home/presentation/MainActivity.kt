@@ -1,5 +1,6 @@
 package com.example.cleanarchitectureshowcase.features.home.presentation
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -7,6 +8,7 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -52,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         popularRequests = findViewById(R.id.popular_requests)
         recentSearches = findViewById(R.id.searched_for_this)
 
+
         // mock data for popular requests
         popularRequests.setItems(listOf("Apple", "Amazon", "Google", "Tesla", "Microsoft", "First Solar", "Alibaba", "Facebook", "Mastercard"))
 
@@ -74,11 +77,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                hideMainScreenElements()
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 hideSearchScreenElements()
+                hideMainScreenElements()
                 showSearchResultScreenElements()
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.updateSearch(query = searchEditText.text.toString().lowercase(), adapter = stocksRVAdapter)
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -99,14 +103,16 @@ class MainActivity : AppCompatActivity() {
 
         searchEditText.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                if (popularRequests.visibility == View.VISIBLE) {
-                    hideSearchResultScreenElements()
-                    hideSearchScreenElements()
-                    showMainScreenElements()
-                } else {
+                if (hasFocus) {
                     hideMainScreenElements()
                     hideSearchResultScreenElements()
                     showSearchScreenElements()
+                } else {
+                    hideSearchScreenElements()
+                    hideSearchResultScreenElements()
+                    showMainScreenElements()
+                    v?.hideKeyboard()
+
                 }
             }
         })
@@ -158,5 +164,10 @@ class MainActivity : AppCompatActivity() {
         popularRequests.visibility = View.GONE
         tvSearchedForThis.visibility = View.GONE
         recentSearches.visibility = View.GONE
+    }
+
+    fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }

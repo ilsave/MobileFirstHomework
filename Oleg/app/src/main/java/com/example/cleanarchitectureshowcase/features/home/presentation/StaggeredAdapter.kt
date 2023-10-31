@@ -17,7 +17,6 @@ class StaggeredAdapter: RecyclerView.Adapter<StaggeredAdapter.RecentSearchesHold
         val searchQueue: TextView = itemView.findViewById(R.id.tv_search_queue)
 
         init {
-
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     staggeredRecyclerViewInterface.onItemClick(adapterPosition)
