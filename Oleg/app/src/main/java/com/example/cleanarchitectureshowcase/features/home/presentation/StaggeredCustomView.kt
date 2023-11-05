@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.cleanarchitectureshowcase.R
+import com.google.android.flexbox.FlexboxLayoutManager
 
 class StaggeredCustomView @JvmOverloads constructor(
     context: Context,
@@ -20,16 +20,12 @@ class StaggeredCustomView @JvmOverloads constructor(
     init {
         LayoutInflater.from(context).inflate(R.layout.staggered_view, this, true)
         recyclerView = findViewById(R.id.rv_recent_search)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, RecyclerView.HORIZONTAL)
+        recyclerView.layoutManager = FlexboxLayoutManager(context)
         adapter = StaggeredAdapter()
         recyclerView.adapter = adapter
     }
 
     fun setItems(items: List<String>) {
         adapter.setData(items)
-    }
-
-    companion object {
-        const val SPAN_COUNT = 2
     }
 }

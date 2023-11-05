@@ -3,19 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/staggered_custom_view_item_layout_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginEnd="@dimen/staggered_custom_view_item_layout_marginEnd"
-    android:layout_marginBottom="@dimen/staggered_custom_view_item_layout_marginBottom"
-    android:orientation="horizontal"
-    android:background="@drawable/list_element_style">
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_search_queue"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="@dimen/staggered_custom_view_item_height"
-        android:paddingVertical="@dimen/staggered_custom_view_item_paddingVertical"
-        android:paddingHorizontal="@dimen/staggered_custom_view_item_paddingHorizontal"
-        android:fontFamily="@font/montserrat_600"
-        android:textSize="@dimen/staggered_custom_view_item_textSize"
-        tools:text="Apple" />
+        app:cardElevation="@dimen/staggered_custom_view_item_cardView_cardElevation">
+
+        <TextView
+            android:background="@drawable/list_element_style"
+            android:id="@+id/tv_search_queue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingVertical="@dimen/staggered_custom_view_item_paddingVertical"
+            android:paddingHorizontal="@dimen/staggered_custom_view_item_paddingHorizontal"
+            android:fontFamily="@font/montserrat_600"
+            android:textSize="@dimen/staggered_custom_view_item_textSize"
+            tools:text="Apple" />
+    </androidx.cardview.widget.CardView>
+
 
 </FrameLayout>

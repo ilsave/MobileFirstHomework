@@ -70,6 +70,7 @@
     <dimen name="staggered_custom_view_item_layout_marginEnd">4dp</dimen>
     <dimen name="staggered_custom_view_item_layout_marginBottom">8dp</dimen>
     <dimen name="staggered_custom_view_item_height">40dp</dimen>
+    <dimen name="staggered_custom_view_item_cardView_cardElevation">0dp</dimen>
     <dimen name="staggered_custom_view_item_paddingVertical">12dp</dimen>
     <dimen name="staggered_custom_view_item_paddingHorizontal">16dp</dimen>
     <dimen name="staggered_custom_view_item_textSize">12sp</dimen>
