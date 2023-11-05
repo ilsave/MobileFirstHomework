@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="search_marginTop">16dp</dimen>
+    <dimen name="search_marginHorizontal">16dp</dimen>
+    <dimen name="search_drawablePadding">8dp</dimen>
+    <dimen name="search_paddingVertical">12dp</dimen>
+    <dimen name="search_paddingStart">16dp</dimen>
+    <dimen name="search_paddingEnd">20dp</dimen>
+    <dimen name="search_textSize">16sp</dimen>
+
+    <dimen name="title_stocks_marginStart">16dp</dimen>
+    <dimen name="title_stocks_marginTop">16dp</dimen>
+    <dimen name="title_stocks_textSize">28sp</dimen>
+    <dimen name="title_favourite_marginStart">20dp</dimen>
+    <dimen name="title_favourite_marginTop">28dp</dimen>
+    <dimen name="title_favourite_textSize">18sp</dimen>
+
+    <dimen name="stocks_progressBar_layout_height">60dp</dimen>
+
+    <dimen name="stocks_rv_layout_width">0dp</dimen>
+    <dimen name="stocks_rv_layout_height">0dp</dimen>
+    <dimen name="stocks_rv_marginTop">20dp</dimen>
+
+    <dimen name="stocks_rv_element_marginHorizontal">16dp</dimen>
+    <dimen name="stocks_rv_element_marginVertical">4dp</dimen>
+
+    <dimen name="stocks_rv_element_icon_cardCornerRadius">10dp</dimen>
+    <dimen name="stocks_rv_element_icon_layout_margin">8dp</dimen>
+    <dimen name="stocks_rv_element_icon_layout_width">52dp</dimen>
+    <dimen name="stocks_rv_element_icon_layout_height">52dp</dimen>
+
+    <dimen name="stocks_rv_element_tickerSymbol_marginTop">12dp</dimen>
+    <dimen name="stocks_rv_element_tickerSymbol_marginStart">4dp</dimen>
+    <dimen name="stocks_rv_element_tickerSymbol_textSize">18sp</dimen>
+
+    <dimen name="stocks_rv_element_companyName_layout_width">180dp</dimen>
+    <dimen name="stocks_rv_element_companyName_marginStart">4dp</dimen>
+    <dimen name="stocks_rv_element_companyName_textSize">12sp</dimen>
+
+    <dimen name="stocks_rv_element_favouriteIcon_layout_width">16dp</dimen>
+    <dimen name="stocks_rv_element_favouriteIcon_layout_height">18dp</dimen>
+    <dimen name="stocks_rv_element_favouriteIcon_marginStart">6dp</dimen>
+    <dimen name="stocks_rv_element_favouriteIcon_marginTop">16dp</dimen>
+
+    <dimen name="stocks_rv_element_currentPrice_textSize">18sp</dimen>
+    <dimen name="stocks_rv_element_currentPrice_marginTop">12dp</dimen>
+    <dimen name="stocks_rv_element_currentPrice_marginEnd">17dp</dimen>
+
+    <dimen name="stocks_rv_element_dayChange_textSize">12sp</dimen>
+    <dimen name="stocks_rv_element_dayChange_marginEnd">12dp</dimen>
+</resources>

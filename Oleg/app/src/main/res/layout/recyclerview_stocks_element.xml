@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/list_element_style"
+    android:layout_marginHorizontal="@dimen/stocks_rv_element_marginHorizontal"
+    android:layout_marginVertical="@dimen/stocks_rv_element_marginVertical" >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_company"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/stocks_rv_element_icon_cardCornerRadius"
+        android:layout_margin="@dimen/stocks_rv_element_icon_layout_margin">
+        <ImageView
+            android:id="@+id/iv_company"
+            android:layout_width="@dimen/stocks_rv_element_icon_layout_width"
+            android:layout_height="@dimen/stocks_rv_element_icon_layout_height"
+            android:background="@color/bg_grey"
+            tools:src="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/tv_ticket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/stocks_rv_element_tickerSymbol_marginTop"
+        android:layout_marginStart="@dimen/stocks_rv_element_tickerSymbol_marginStart"
+        tools:text="YNDX"
+        android:fontFamily="@font/montserrat_700"
+        android:textSize="@dimen/stocks_rv_element_tickerSymbol_textSize"
+        android:textColor="@color/black"
+        android:layout_toEndOf="@id/cv_company" />
+
+    <TextView
+        android:id="@+id/tv_company_name"
+        android:layout_width="@dimen/stocks_rv_element_companyName_layout_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_ticket"
+        android:layout_marginStart="@dimen/stocks_rv_element_companyName_marginStart"
+        android:layout_toEndOf="@id/cv_company"
+        android:fontFamily="@font/montserrat_600"
+        android:maxLength="-1"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:textSize="@dimen/stocks_rv_element_companyName_textSize"
+        tools:text="Yandex, LLC" />
+
+    <ImageView
+        android:id="@+id/ib_favourite"
+        android:layout_width="@dimen/stocks_rv_element_favouriteIcon_layout_width"
+        android:layout_height="@dimen/stocks_rv_element_favouriteIcon_layout_height"
+        android:layout_marginStart="@dimen/stocks_rv_element_favouriteIcon_marginStart"
+        android:layout_marginTop="@dimen/stocks_rv_element_favouriteIcon_marginTop"
+        android:layout_toEndOf="@id/tv_ticket"
+
+        android:src="@drawable/favourite_grey_icon"/>
+
+    <TextView
+        android:id="@+id/tv_current_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="$131.93"
+        android:textSize="@dimen/stocks_rv_element_currentPrice_textSize"
+        android:fontFamily="@font/montserrat_700"
+        android:textColor="@color/black"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/stocks_rv_element_currentPrice_marginTop"
+        android:layout_marginEnd="@dimen/stocks_rv_element_currentPrice_marginEnd"/>
+
+    <TextView
+        android:id="@+id/tv_day_delta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="+$0.12 (1,15%)"
+        android:textSize="@dimen/stocks_rv_element_dayChange_textSize"
+        android:fontFamily="@font/montserrat_600"
+        android:textColor="@color/green"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/tv_current_price"
+        android:layout_marginEnd="@dimen/stocks_rv_element_dayChange_marginEnd"/>
+
+</RelativeLayout>

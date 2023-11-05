@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".features.home.presentation.MainActivity">
+    
+    <EditText
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/search_marginHorizontal"
+        android:layout_marginTop="@dimen/search_marginTop"
+        android:background="@drawable/et_search_style"
+        android:drawableStart="@drawable/search_icon"
+        android:drawablePadding="@dimen/search_drawablePadding"
+        android:fontFamily="@font/montserrat_600"
+        android:hint="@string/search_hint"
+        android:paddingVertical="@dimen/search_paddingVertical"
+        android:paddingStart="@dimen/search_paddingStart"
+        android:paddingEnd="@dimen/search_paddingEnd"
+        android:textColorHint="@color/black"
+        android:textSize="@dimen/search_textSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_stocks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/title_stocks_marginStart"
+        android:layout_marginTop="@dimen/title_stocks_marginTop"
+        android:fontFamily="@font/montserrat_700"
+        android:text="@string/stocks"
+        android:textColor="@color/black"
+        android:textSize="@dimen/title_stocks_textSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search" />
+
+    <TextView
+        android:id="@+id/tv_favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/title_favourite_marginStart"
+        android:layout_marginTop="@dimen/title_favourite_marginTop"
+        android:fontFamily="@font/montserrat_700"
+        android:text="@string/favourite"
+        android:textColor="@color/grey"
+        android:textSize="@dimen/title_favourite_textSize"
+        app:layout_constraintStart_toEndOf="@id/tv_stocks"
+        app:layout_constraintTop_toBottomOf="@id/et_search" />
+
+    <ProgressBar
+        android:id="@+id/pb_rv_loading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stocks_progressBar_layout_height"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/rv_stocks"
+        app:layout_constraintStart_toStartOf="@id/rv_stocks"
+        app:layout_constraintTop_toTopOf="@id/rv_stocks"
+        app:layout_constraintBottom_toBottomOf="@id/rv_stocks"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_stocks"
+        android:layout_width="@dimen/stocks_rv_layout_width"
+        android:layout_height="@dimen/stocks_rv_layout_height"
+        android:layout_marginTop="@dimen/stocks_rv_marginTop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_stocks" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
