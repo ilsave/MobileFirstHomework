@@ -1,5 +1,6 @@
 package com.example.cleanarchitectureshowcase.features.home.presentation
 
+import android.widget.EditText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitectureshowcase.features.home.domain.GetSearchResultsUseCase
@@ -18,11 +19,16 @@ class MainViewModel @Inject constructor(
     private val getSearchResultsUseCase: GetSearchResultsUseCase,
 ): ViewModel() {
 
+    @Inject
+    lateinit var stocksAdapter: StocksAdapter
+
     private val userSearchHistoryService = UserSearchHistoryService()
 
     private val _state = MutableStateFlow<StocksDataUI?>(null)
     val state = _state
     private var searchJob: Job? = null
+
+    val searchFocusState = MutableStateFlow<String?>(null)
 
     private fun getStocksData() {
         viewModelScope.launch {
@@ -35,23 +41,34 @@ class MainViewModel @Inject constructor(
         getStocksData()
     }
 
-    fun setDataInStocksAdapter(data: StocksDataUI, adapter: StocksAdapter) {
-        adapter.apply {
+    fun searchFocusChanged(focus: Boolean) {
+        when (focus) {
+            true -> {
+                searchFocusState.value = "Search screen"
+            }
+            false -> {
+                searchFocusState.value = "Main screen"
+            }
+        }
+    }
+
+    fun setDataInStocksAdapter(data: StocksDataUI) {
+        stocksAdapter.apply {
             setItemsAndPics(data.stocks, data.pics)
             setOriginalData(data)
         }
     }
 
-    fun updateSearch(query: String?, adapter: StocksAdapter) {
+    fun updateSearch(query: String?) {
         searchJob?.cancel()
 
         if (query.isNullOrEmpty()) {
-            adapter.retrieveOriginalData()
+            stocksAdapter.retrieveOriginalData()
         } else {
             searchJob = viewModelScope.launch {
                 delay(400)
                 val result = query.let { getSearchResultsUseCase.invoke(it) }
-                adapter.setItemsAndPics(result.stocks, result.pics)
+                stocksAdapter.setItemsAndPics(result.stocks, result.pics)
             }
         }
     }
@@ -59,11 +76,15 @@ class MainViewModel @Inject constructor(
     fun addToSearchHistory(query: String?, adapter: StaggeredAdapter) {
         if (query != null && !userSearchHistoryService.contains(query)) {
             userSearchHistoryService.add(query)
-            setDataInStaggeredAdapter(userSearchHistoryService.searchHistory, adapter)
+            setDataInStaggeredAdapter(userSearchHistoryService.getSearchHistory(), adapter)
         }
     }
 
     private fun setDataInStaggeredAdapter(data: List<String>, adapter: StaggeredAdapter) {
         adapter.setData(data)
+    }
+
+    fun setTextInEditText(editText: EditText, text: String) {
+        editText.setText(text)
     }
 }

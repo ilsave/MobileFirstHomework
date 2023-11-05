@@ -7,4 +7,16 @@
     <string name="searched_for_this">You\'ve searched for this</string>
     <string name="show_more">Show more</string>
     <string name="chart">Chart</string>
+    
+    <string-array name="popular_requests">
+        <item>Apple</item>
+        <item>Amazon</item>
+        <item>Google</item>
+        <item>Tesla</item>
+        <item>Microsoft</item>
+        <item>First Solar</item>
+        <item>Alibaba</item>
+        <item>Facebook</item>
+        <item>Mastercard</item>
+    </string-array>
 </resources>

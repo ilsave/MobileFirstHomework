@@ -9,110 +9,100 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitectureshowcase.R
+import com.example.cleanarchitectureshowcase.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val viewModel: MainViewModel by viewModels()
-    private lateinit var stocksRecyclerView: RecyclerView
-    private lateinit var stocksRVAdapter: StocksAdapter
-    private lateinit var progressBarStocksRecyclerView: ProgressBar
-    private lateinit var searchEditText: EditText
-    private lateinit var tvPopularRequests: TextView
-    private lateinit var tvStocks: TextView
-    private lateinit var tvFavourite: TextView
-    private lateinit var tvShowMore: TextView
-    private lateinit var tvStocksOnSearch: TextView
-    private lateinit var tvSearchedForThis: TextView
-    private lateinit var popularRequests: StaggeredCustomView
-    private lateinit var recentSearches: StaggeredCustomView
+
+    private lateinit var binding: ActivityMainBinding
+
+    @Inject
+    lateinit var stocksRVAdapter: StocksAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        stocksRecyclerView = findViewById(R.id.rv_stocks)
-        stocksRVAdapter = StocksAdapter()
-        progressBarStocksRecyclerView = findViewById(R.id.pb_rv_loading)
-        searchEditText = findViewById(R.id.et_search)
-        tvStocks = findViewById(R.id.tv_stocks)
-        tvFavourite = findViewById(R.id.tv_favourite)
-        tvShowMore = findViewById(R.id.tv_show_more)
-        tvStocksOnSearch = findViewById(R.id.tv_stocks_on_search)
-        tvPopularRequests = findViewById(R.id.tv_popular_requests)
-        tvSearchedForThis = findViewById(R.id.tv_searched_for_this)
-        popularRequests = findViewById(R.id.popular_requests)
-        recentSearches = findViewById(R.id.searched_for_this)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         // mock data for popular requests
-        popularRequests.setItems(listOf("Apple", "Amazon", "Google", "Tesla", "Microsoft", "First Solar", "Alibaba", "Facebook", "Mastercard"))
+        binding.popularRequests.setItems(resources.getStringArray(R.array.popular_requests).asList())
 
-        popularRequests.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
+        binding.popularRequests.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
             override fun onItemClick(position: Int) {
-                searchEditText.setText(popularRequests.adapter.getItem(position))
-                viewModel.addToSearchHistory(searchEditText.text.toString(), recentSearches.adapter)
+                viewModel.setTextInEditText(editText = binding.etSearch, text = binding.popularRequests.adapter.getItem(position))
+                viewModel.addToSearchHistory(binding.etSearch.text.toString(), binding.searchedForThis.adapter)
             }
         })
 
-        recentSearches.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
+        binding.searchedForThis.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
             override fun onItemClick(position: Int) {
-                searchEditText.setText(recentSearches.adapter.getItem(position))
+                viewModel.setTextInEditText(editText = binding.etSearch, text = binding.searchedForThis.adapter.getItem(position))
             }
         })
 
-        stocksRecyclerView.apply {
+        binding.rvStocks.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = stocksRVAdapter
         }
 
-        searchEditText.addTextChangedListener(object : TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // show search results
                 hideSearchScreenElements()
                 hideMainScreenElements()
                 showSearchResultScreenElements()
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.updateSearch(query = searchEditText.text.toString().lowercase(), adapter = stocksRVAdapter)
+                viewModel.updateSearch(query = binding.etSearch.text.toString().lowercase())
             }
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        searchEditText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+        binding.etSearch.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId != EditorInfo.IME_ACTION_SEARCH) {
                     return false
                 }
-                if (searchEditText.text.isNullOrEmpty()) {
+                if (binding.etSearch.text.isNullOrEmpty()) {
                     return false
                 }
-                viewModel.addToSearchHistory(searchEditText.text.toString(), recentSearches.adapter)
+                viewModel.addToSearchHistory(binding.etSearch.text.toString(), binding.searchedForThis.adapter)
                 return true
             }
         })
 
-        searchEditText.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+        binding.etSearch.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                if (hasFocus) {
-                    hideMainScreenElements()
-                    hideSearchResultScreenElements()
-                    showSearchScreenElements()
-                } else {
-                    hideSearchScreenElements()
-                    hideSearchResultScreenElements()
-                    showMainScreenElements()
-                    v?.hideKeyboard()
-
+                lifecycleScope.launch {
+                    viewModel.searchFocusChanged(focus = hasFocus)
+                    viewModel.searchFocusState.collectLatest {state ->
+                        when (state) {
+                            "Search screen" -> {
+                                hideMainScreenElements()
+                                hideSearchResultScreenElements()
+                                showSearchScreenElements()
+                            }
+                            "Main screen" -> {
+                                hideSearchScreenElements()
+                                hideSearchResultScreenElements()
+                                showMainScreenElements()
+                                v?.hideKeyboard()
+                            }
+                        }
+                    }
                 }
             }
         })
@@ -121,8 +111,8 @@ class MainActivity : AppCompatActivity() {
             viewModel.activityCreated()
             viewModel.state.collectLatest {data ->
                 data?.let {
-                    viewModel.setDataInStocksAdapter(data = data, adapter = stocksRVAdapter)
-                    hideProgressBar(progressBarStocksRecyclerView)
+                    viewModel.setDataInStocksAdapter(data = data)
+                    hideProgressBar(binding.pbRvLoading)
                 }
             }
         }
@@ -135,35 +125,35 @@ class MainActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
     }
     fun showMainScreenElements() {
-        stocksRecyclerView.visibility = View.VISIBLE
-        tvStocks.visibility = View.VISIBLE
-        tvFavourite.visibility = View.VISIBLE
+        binding.rvStocks.visibility = View.VISIBLE
+        binding.tvStocks.visibility = View.VISIBLE
+        binding.tvFavourite.visibility = View.VISIBLE
     }
     fun hideMainScreenElements() {
-        stocksRecyclerView.visibility = View.GONE
-        tvStocks.visibility = View.GONE
-        tvFavourite.visibility = View.GONE
+        binding.rvStocks.visibility = View.GONE
+        binding.tvStocks.visibility = View.GONE
+        binding.tvFavourite.visibility = View.GONE
     }
     fun showSearchResultScreenElements() {
-        stocksRecyclerView.visibility = View.VISIBLE
-        tvStocksOnSearch.visibility = View.VISIBLE
-        tvShowMore.visibility = View.VISIBLE
+        binding.rvStocks.visibility = View.VISIBLE
+        binding.tvStocksOnSearch.visibility = View.VISIBLE
+        binding.tvShowMore.visibility = View.VISIBLE
     }
     fun hideSearchResultScreenElements() {
-        tvStocksOnSearch.visibility = View.GONE
-        tvShowMore.visibility = View.GONE
+        binding.tvStocksOnSearch.visibility = View.GONE
+        binding.tvShowMore.visibility = View.GONE
     }
     fun showSearchScreenElements() {
-        tvPopularRequests.visibility = View.VISIBLE
-        popularRequests.visibility = View.VISIBLE
-        tvSearchedForThis.visibility = View.VISIBLE
-        recentSearches.visibility = View.VISIBLE
+        binding.tvPopularRequests.visibility = View.VISIBLE
+        binding.popularRequests.visibility = View.VISIBLE
+        binding.tvSearchedForThis.visibility = View.VISIBLE
+        binding.searchedForThis.visibility = View.VISIBLE
     }
     fun hideSearchScreenElements() {
-        tvPopularRequests.visibility = View.GONE
-        popularRequests.visibility = View.GONE
-        tvSearchedForThis.visibility = View.GONE
-        recentSearches.visibility = View.GONE
+        binding.tvPopularRequests.visibility = View.GONE
+        binding.popularRequests.visibility = View.GONE
+        binding.tvSearchedForThis.visibility = View.GONE
+        binding.searchedForThis.visibility = View.GONE
     }
 
     fun View.hideKeyboard() {

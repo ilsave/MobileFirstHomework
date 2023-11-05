@@ -2,13 +2,17 @@ package com.example.cleanarchitectureshowcase.features.home.domain
 
 class UserSearchHistoryService() {
 
-    val searchHistory = mutableListOf<String>()
+    private val searchHistory = mutableListOf<String>()
 
     fun add(searchQuery: String) {
         if (searchHistory.size == SEARCH_HISTORY_SIZE) {
             searchHistory.removeFirst()
         }
         searchHistory.add(searchQuery)
+    }
+
+    fun getSearchHistory(): List<String> {
+        return searchHistory
     }
 
     fun contains(query: String): Boolean {
