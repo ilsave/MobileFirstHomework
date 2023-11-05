@@ -25,6 +25,14 @@ interface ServerDataApi {
         @Query("apikey") apikey: String = API_KEY
     ): List<StockPictureDTO>
 
+    @GET("v3/search-ticker")
+    suspend fun getStocksByQuery(
+        @Query("query") query: String,
+        @Query("limit") limit: Int,
+        @Query("exchange") exchange: String,
+        @Query("apikey") apikey: String = API_KEY
+    ): List<StockQueryDTO>
+
     companion object {
         const val API_KEY = BuildConfig.FINANCIALMODELINGPREP_API_KEY
         const val BASE_URL = "https://financialmodelingprep.com/api/"

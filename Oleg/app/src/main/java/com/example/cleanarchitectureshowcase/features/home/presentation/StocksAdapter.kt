@@ -14,8 +14,9 @@ import com.example.cleanarchitectureshowcase.features.home.data.StockPictureDTO
 
 class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
 
+    private var originalData: StocksDataUI? = null
     private var stocks: List<StockInfoDTO> = listOf()
-    private var pics: List<StockPictureDTO> = listOf()
+    private var stocksPictures: List<StockPictureDTO> = listOf()
 
     class StocksHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val ticket: TextView = itemView.findViewById(R.id.tv_ticket)
@@ -32,13 +33,13 @@ class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
 
     override fun onBindViewHolder(holder: StocksHolder, position: Int) {
         val item = stocks[position]
-        val pic = pics[position]
+        val picture = stocksPictures[position]
         val context = holder.itemView.context
 
         // this abomination...
         with(holder) {
             Glide.with(context)
-                .load(pic.image)
+                .load(picture.image)
                 .error(R.drawable.stock_placeholder)
                 .placeholder(R.color.white)
                 .into(stockPicture)
@@ -74,12 +75,21 @@ class StocksAdapter: RecyclerView.Adapter<StocksAdapter.StocksHolder>() {
         return stocks.size
     }
 
-    fun setItems(newItems: List<StockInfoDTO>) {
+    fun setItemsAndPics(newItems: List<StockInfoDTO>, newPics: List<StockPictureDTO>) {
         stocks = newItems
+        stocksPictures = newPics
         notifyDataSetChanged()
     }
 
-    fun setPics(newPics: List<StockPictureDTO>) {
-        pics = newPics
+    fun setOriginalData(data: StocksDataUI) {
+        originalData = data
+    }
+
+    fun retrieveOriginalData() {
+        originalData?.let {
+            stocks = it.stocks
+            stocksPictures = it.pics
+        }
+        notifyDataSetChanged()
     }
 }

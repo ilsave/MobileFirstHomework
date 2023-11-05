@@ -7,17 +7,18 @@ class DataRepositoryImpl(
 ): DataRepository {
 
     override suspend fun getStocksList(): List<StockDTO> {
-        val response = api.getAllStocks()
-        return response
+        return api.getAllStocks()
     }
 
     override suspend fun getStockInfo(stock: String): List<StockInfoDTO> {
-        val response = api.getStockFullInfo(stock)
-        return response
+        return api.getStockFullInfo(stock)
     }
 
     override suspend fun getStockPicture(stock: String): List<StockPictureDTO> {
-        val response = api.getStockPicture(stock)
-        return response
+        return api.getStockPicture(stock)
+    }
+
+    override suspend fun getStocksByQuery(query: String, limit: Int, exchange: String): List<StockQueryDTO> {
+        return api.getStocksByQuery(query, limit, exchange)
     }
 }
