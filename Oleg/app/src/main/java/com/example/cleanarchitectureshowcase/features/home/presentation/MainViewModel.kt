@@ -22,13 +22,14 @@ class MainViewModel @Inject constructor(
     @Inject
     lateinit var stocksAdapter: StocksAdapter
 
-    private val userSearchHistoryService = UserSearchHistoryService()
+    @Inject
+    lateinit var userSearchHistoryService: UserSearchHistoryService
 
     private val _state = MutableStateFlow<StocksDataUI?>(null)
     val state = _state
     private var searchJob: Job? = null
 
-    val searchFocusState = MutableStateFlow<String?>(null)
+    val searchFocusState = MutableStateFlow<SearchScreenState?>(null)
 
     private fun getStocksData() {
         viewModelScope.launch {
@@ -41,14 +42,11 @@ class MainViewModel @Inject constructor(
         getStocksData()
     }
 
-    fun searchFocusChanged(focus: Boolean) {
-        when (focus) {
-            true -> {
-                searchFocusState.value = "Search screen"
-            }
-            false -> {
-                searchFocusState.value = "Main screen"
-            }
+    fun searchFocusChanged(focused: Boolean) {
+        if (focused) {
+            searchFocusState.value = SearchScreenState.SearchScreen
+        } else {
+            searchFocusState.value = SearchScreenState.MainScreen
         }
     }
 
@@ -66,7 +64,7 @@ class MainViewModel @Inject constructor(
             stocksAdapter.retrieveOriginalData()
         } else {
             searchJob = viewModelScope.launch {
-                delay(400)
+                delay(DEBOUNCE_MILLIS)
                 val result = query.let { getSearchResultsUseCase.invoke(it) }
                 stocksAdapter.setItemsAndPics(result.stocks, result.pics)
             }
@@ -74,7 +72,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun addToSearchHistory(query: String?, adapter: StaggeredAdapter) {
-        if (query != null && !userSearchHistoryService.contains(query)) {
+        if (query != null && !userSearchHistoryService.containsSearchQuery(query)) {
             userSearchHistoryService.add(query)
             setDataInStaggeredAdapter(userSearchHistoryService.getSearchHistory(), adapter)
         }
@@ -86,5 +84,9 @@ class MainViewModel @Inject constructor(
 
     fun setTextInEditText(editText: EditText, text: String) {
         editText.setText(text)
+    }
+
+    companion object {
+        const val DEBOUNCE_MILLIS: Long = 400
     }
 }

@@ -15,7 +15,7 @@ class UserSearchHistoryService() {
         return searchHistory
     }
 
-    fun contains(query: String): Boolean {
+    fun containsSearchQuery(query: String): Boolean {
         return searchHistory.contains(query)
     }
 

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.popularRequests.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
             override fun onItemClick(position: Int) {
+                //binding.etSearch.setText()
                 viewModel.setTextInEditText(editText = binding.etSearch, text = binding.popularRequests.adapter.getItem(position))
                 viewModel.addToSearchHistory(binding.etSearch.text.toString(), binding.searchedForThis.adapter)
             }
@@ -87,20 +88,21 @@ class MainActivity : AppCompatActivity() {
         binding.etSearch.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 lifecycleScope.launch {
-                    viewModel.searchFocusChanged(focus = hasFocus)
+                    viewModel.searchFocusChanged(focused = hasFocus)
                     viewModel.searchFocusState.collectLatest {state ->
                         when (state) {
-                            "Search screen" -> {
+                            is SearchScreenState.SearchScreen -> {
                                 hideMainScreenElements()
                                 hideSearchResultScreenElements()
                                 showSearchScreenElements()
                             }
-                            "Main screen" -> {
+                            is SearchScreenState.MainScreen -> {
                                 hideSearchScreenElements()
                                 hideSearchResultScreenElements()
                                 showMainScreenElements()
                                 v?.hideKeyboard()
                             }
+                            else -> { /* nothing */ }
                         }
                     }
                 }
@@ -121,34 +123,41 @@ class MainActivity : AppCompatActivity() {
     fun showProgressBar(progressBar: ProgressBar) {
         progressBar.visibility = View.VISIBLE
     }
+
     fun hideProgressBar(progressBar: ProgressBar) {
         progressBar.visibility = View.GONE
     }
+
     fun showMainScreenElements() {
         binding.rvStocks.visibility = View.VISIBLE
         binding.tvStocks.visibility = View.VISIBLE
         binding.tvFavourite.visibility = View.VISIBLE
     }
+
     fun hideMainScreenElements() {
         binding.rvStocks.visibility = View.GONE
         binding.tvStocks.visibility = View.GONE
         binding.tvFavourite.visibility = View.GONE
     }
+
     fun showSearchResultScreenElements() {
         binding.rvStocks.visibility = View.VISIBLE
         binding.tvStocksOnSearch.visibility = View.VISIBLE
         binding.tvShowMore.visibility = View.VISIBLE
     }
+
     fun hideSearchResultScreenElements() {
         binding.tvStocksOnSearch.visibility = View.GONE
         binding.tvShowMore.visibility = View.GONE
     }
+
     fun showSearchScreenElements() {
         binding.tvPopularRequests.visibility = View.VISIBLE
         binding.popularRequests.visibility = View.VISIBLE
         binding.tvSearchedForThis.visibility = View.VISIBLE
         binding.searchedForThis.visibility = View.VISIBLE
     }
+
     fun hideSearchScreenElements() {
         binding.tvPopularRequests.visibility = View.GONE
         binding.popularRequests.visibility = View.GONE
