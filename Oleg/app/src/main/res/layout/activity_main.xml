@@ -9,7 +9,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     tools:context=".features.home.presentation.MainActivity">
-    
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_layout"
         android:layout_width="match_parent"
@@ -25,19 +25,16 @@
 
         <EditText
             android:id="@+id/et_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/et_search_style"
-            android:drawableStart="@drawable/search_icon"
-            android:searchIcon="@drawable/search_icon"
-            android:closeIcon="@drawable/close_icon"
-            app:searchIcon="@drawable/search_icon"
-            app:closeIcon="@drawable/close_icon"
-            app:goIcon="@drawable/back_icon"
+            android:drawableStart="@drawable/et_search_icon_selector"
             android:drawablePadding="@dimen/search_drawablePadding"
             android:fontFamily="@font/montserrat_600"
             android:hint="@string/search_hint"
-            android:paddingVertical="12dp"
+            android:paddingVertical="@dimen/search_paddingVertical"
             android:paddingStart="@dimen/search_paddingStart"
             android:paddingEnd="@dimen/search_paddingEnd"
             android:textColorHint="@color/black"
@@ -73,6 +70,81 @@
         app:layout_constraintStart_toEndOf="@id/tv_stocks"
         app:layout_constraintTop_toBottomOf="@+id/et_layout" />
 
+    <TextView
+        android:id="@+id/tv_popular_requests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/title_stocks_marginStart"
+        android:layout_marginTop="@dimen/title_favourite_marginTop"
+        android:fontFamily="@font/montserrat_700"
+        android:text="@string/popular_requests"
+        android:textColor="@color/black"
+        android:textSize="@dimen/title_favourite_textSize"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_layout" />
+
+    <com.example.cleanarchitectureshowcase.features.home.presentation.StaggeredCustomView
+        android:id="@+id/popular_requests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/staggered_custom_view_marginTop"
+        app:layout_constraintTop_toBottomOf="@+id/tv_popular_requests"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_searched_for_this"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/searched_for_this"
+        android:fontFamily="@font/montserrat_700"
+        android:textSize="@dimen/searched_for_this_textSize"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/searched_for_this_marginStart"
+        android:layout_marginTop="@dimen/searched_for_this_marginTop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/popular_requests"
+        android:visibility="gone"/>
+
+    <com.example.cleanarchitectureshowcase.features.home.presentation.StaggeredCustomView
+        android:id="@+id/searched_for_this"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/staggered_custom_view_marginTop"
+        app:layout_constraintTop_toBottomOf="@id/tv_searched_for_this"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_stocks_on_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_700"
+        android:layout_marginStart="@dimen/on_search_tv_stocks_marginStart"
+        android:layout_marginTop="@dimen/on_search_tv_stocks_marginTop"
+        android:textSize="@dimen/on_search_tv_stocks_textSize"
+        android:text="@string/stocks"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_layout"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_show_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_600"
+        android:text="@string/show_more"
+        android:textColor="@color/black"
+        android:textSize="@dimen/on_search_tv_show_more_textSize"
+        android:layout_marginTop="@dimen/on_search_tv_show_more_marginTop"
+        android:layout_marginEnd="@dimen/on_search_tv_show_more_marginEnd"
+        app:layout_constraintTop_toBottomOf="@id/et_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
+
     <ProgressBar
         android:id="@+id/pb_rv_loading"
         android:layout_width="match_parent"
@@ -91,6 +163,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_stocks" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

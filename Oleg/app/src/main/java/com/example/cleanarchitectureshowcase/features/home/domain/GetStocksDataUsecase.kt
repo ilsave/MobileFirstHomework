@@ -20,16 +20,13 @@ class GetStocksDataUsecase @Inject constructor(
         val firstTenStocks = stocksList.subList(0, 10)
         val firstTenStocksAsString =
             firstTenStocks.map { it.symbol }.reduceOrNull { acc, value -> "$acc,$value" }
-
         // if there are no stocks we return empty lists
         if (firstTenStocksAsString.isNullOrEmpty()) {
             return@withContext StocksDataUI(emptyList(), emptyList())
         }
-
         val stocksDataDeferred = async {
             repository.getStockInfo(firstTenStocksAsString)
         }
-
         val stocksPicturesDeferred = async {
             repository.getStockPicture(firstTenStocksAsString)
         }

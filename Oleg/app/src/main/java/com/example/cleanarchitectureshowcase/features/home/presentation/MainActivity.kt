@@ -1,59 +1,128 @@
 package com.example.cleanarchitectureshowcase.features.home.presentation
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
-import android.widget.EditText
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitectureshowcase.R
+import com.example.cleanarchitectureshowcase.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val viewModel: MainViewModel by viewModels()
 
-    private lateinit var stocksRecyclerView: RecyclerView
-    private lateinit var stocksRVAdapter: StocksAdapter
-    private lateinit var progressBarStocksRecyclerView: ProgressBar
-    private lateinit var searchEditText: EditText
+    private lateinit var binding: ActivityMainBinding
+
+    @Inject
+    lateinit var stocksRVAdapter: StocksAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        stocksRecyclerView = findViewById(R.id.rv_stocks)
-        stocksRVAdapter = StocksAdapter()
-        progressBarStocksRecyclerView = findViewById(R.id.pb_rv_loading)
-        searchEditText = findViewById(R.id.et_search)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        stocksRecyclerView.apply {
+        // mock data for popular requests
+        binding.popularRequests.adapter.setData(resources.getStringArray(R.array.popular_requests).asList())
+
+        binding.popularRequests.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
+            override fun onItemClick(position: Int) {
+                binding.etSearch.setText(binding.popularRequests.adapter.getItem(position))
+                viewModel.addToSearchHistory(binding.etSearch.text.toString())
+            }
+        })
+
+        lifecycleScope.launch {
+            viewModel.history.collect { history ->
+                    history?.let {
+                        binding.searchedForThis.adapter.setData(it)
+                    }
+            }
+        }
+
+        binding.searchedForThis.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
+            override fun onItemClick(position: Int) {
+                viewModel.setTextInEditText(editText = binding.etSearch, text = binding.searchedForThis.adapter.getItem(position))
+            }
+        })
+
+        binding.rvStocks.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = stocksRVAdapter
         }
 
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // show search results
+                hideSearchScreenElements()
+                hideMainScreenElements()
+                showSearchResultScreenElements()
+            }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.updateSearch(query = searchEditText.text.toString().lowercase(), adapter = stocksRVAdapter)
+                viewModel.updateSearch(query = binding.etSearch.text.toString().lowercase())
             }
             override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.etSearch.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId != EditorInfo.IME_ACTION_SEARCH) {
+                    return false
+                }
+                if (binding.etSearch.text.isNullOrEmpty()) {
+                    return false
+                }
+
+                viewModel.addToSearchHistory(binding.etSearch.text.toString())
+                return true
+            }
+        })
+
+        binding.etSearch.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                lifecycleScope.launch {
+                    viewModel.searchFocusChanged(focused = hasFocus)
+                    viewModel.searchFocusState.collectLatest {state ->
+                        when (state) {
+                            is SearchScreenState.SearchScreen -> {
+                                hideMainScreenElements()
+                                hideSearchResultScreenElements()
+                                showSearchScreenElements()
+                            }
+                            is SearchScreenState.MainScreen -> {
+                                hideSearchScreenElements()
+                                hideSearchResultScreenElements()
+                                showMainScreenElements()
+                                v?.hideKeyboard()
+                            }
+                            else -> { /* nothing */ }
+                        }
+                    }
+                }
+            }
         })
 
         lifecycleScope.launch {
             viewModel.activityCreated()
             viewModel.state.collectLatest {data ->
                 data?.let {
-                    viewModel.setDataInStocksAdapter(data = data, adapter = stocksRVAdapter)
-                    hideProgressBar(progressBarStocksRecyclerView)
+                    viewModel.setDataInStocksAdapter(data = data)
+                    hideProgressBar(binding.pbRvLoading)
                 }
             }
         }
@@ -65,5 +134,47 @@ class MainActivity : AppCompatActivity() {
 
     fun hideProgressBar(progressBar: ProgressBar) {
         progressBar.visibility = View.GONE
+    }
+
+    fun showMainScreenElements() {
+        binding.rvStocks.visibility = View.VISIBLE
+        binding.tvStocks.visibility = View.VISIBLE
+        binding.tvFavourite.visibility = View.VISIBLE
+    }
+
+    fun hideMainScreenElements() {
+        binding.rvStocks.visibility = View.GONE
+        binding.tvStocks.visibility = View.GONE
+        binding.tvFavourite.visibility = View.GONE
+    }
+
+    fun showSearchResultScreenElements() {
+        binding.rvStocks.visibility = View.VISIBLE
+        binding.tvStocksOnSearch.visibility = View.VISIBLE
+        binding.tvShowMore.visibility = View.VISIBLE
+    }
+
+    fun hideSearchResultScreenElements() {
+        binding.tvStocksOnSearch.visibility = View.GONE
+        binding.tvShowMore.visibility = View.GONE
+    }
+
+    fun showSearchScreenElements() {
+        binding.tvPopularRequests.visibility = View.VISIBLE
+        binding.popularRequests.visibility = View.VISIBLE
+        binding.tvSearchedForThis.visibility = View.VISIBLE
+        binding.searchedForThis.visibility = View.VISIBLE
+    }
+
+    fun hideSearchScreenElements() {
+        binding.tvPopularRequests.visibility = View.GONE
+        binding.popularRequests.visibility = View.GONE
+        binding.tvSearchedForThis.visibility = View.GONE
+        binding.searchedForThis.visibility = View.GONE
+    }
+
+    fun View.hideKeyboard() {
+        val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }

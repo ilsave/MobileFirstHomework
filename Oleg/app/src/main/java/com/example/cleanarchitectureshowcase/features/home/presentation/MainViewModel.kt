@@ -1,9 +1,11 @@
 package com.example.cleanarchitectureshowcase.features.home.presentation
 
+import android.widget.EditText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitectureshowcase.features.home.domain.GetSearchResultsUseCase
 import com.example.cleanarchitectureshowcase.features.home.domain.GetStocksDataUsecase
+import com.example.cleanarchitectureshowcase.features.home.domain.UserSearchHistoryService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -14,14 +16,24 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getStocksDataUsecase: GetStocksDataUsecase,
-    private val getSearchResultsUseCase: GetSearchResultsUseCase
+    private val getSearchResultsUseCase: GetSearchResultsUseCase,
 ): ViewModel() {
+
+    @Inject
+    lateinit var stocksAdapter: StocksAdapter
+
+    @Inject
+    lateinit var userSearchHistoryService: UserSearchHistoryService
 
     private val _state = MutableStateFlow<StocksDataUI?>(null)
     val state = _state
     private var searchJob: Job? = null
 
-    fun getStocksData() {
+    val searchFocusState = MutableStateFlow<SearchScreenState?>(null)
+
+    val history = MutableStateFlow<List<String>?>(null)
+
+    private fun getStocksData() {
         viewModelScope.launch {
             val result = getStocksDataUsecase.invoke("Params")
             state.value = result
@@ -32,24 +44,47 @@ class MainViewModel @Inject constructor(
         getStocksData()
     }
 
-    fun setDataInStocksAdapter(data: StocksDataUI, adapter: StocksAdapter) {
-        adapter.apply {
+    fun searchFocusChanged(focused: Boolean) {
+        if (focused) {
+            searchFocusState.value = SearchScreenState.SearchScreen
+        } else {
+            searchFocusState.value = SearchScreenState.MainScreen
+        }
+    }
+
+    fun setDataInStocksAdapter(data: StocksDataUI) {
+        stocksAdapter.apply {
             setItemsAndPics(data.stocks, data.pics)
             setOriginalData(data)
         }
     }
 
-    fun updateSearch(query: String?, adapter: StocksAdapter) {
+    fun updateSearch(query: String?) {
         searchJob?.cancel()
 
         if (query.isNullOrEmpty()) {
-            adapter.retrieveOriginalData()
+            stocksAdapter.retrieveOriginalData()
         } else {
             searchJob = viewModelScope.launch {
-                delay(400)
+                delay(DEBOUNCE_MILLIS)
                 val result = query.let { getSearchResultsUseCase.invoke(it) }
-                adapter.setItemsAndPics(result.stocks, result.pics)
+                stocksAdapter.setItemsAndPics(result.stocks, result.pics)
             }
         }
+    }
+
+    fun addToSearchHistory(query: String) {
+        if (!userSearchHistoryService.containsSearchQuery(query)) {
+            userSearchHistoryService.add(query)
+            history.value = userSearchHistoryService.getSearchHistory()
+        }
+    }
+
+    fun setTextInEditText(editText: EditText, text: String) {
+        editText.setText(text)
+    }
+
+    companion object {
+        const val DEBOUNCE_MILLIS: Long = 400
     }
 }

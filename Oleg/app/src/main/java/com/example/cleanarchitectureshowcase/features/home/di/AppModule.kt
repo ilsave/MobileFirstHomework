@@ -5,6 +5,8 @@ import com.example.cleanarchitectureshowcase.features.home.data.ServerDataApi
 import com.example.cleanarchitectureshowcase.features.home.domain.DataPreparationHelper
 import com.example.cleanarchitectureshowcase.features.home.domain.DataPreparationHelperImpl
 import com.example.cleanarchitectureshowcase.features.home.domain.DataRepository
+import com.example.cleanarchitectureshowcase.features.home.domain.UserSearchHistoryService
+import com.example.cleanarchitectureshowcase.features.home.presentation.StocksAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +40,12 @@ object AppModule {
     fun provideBusinessLogicObject(): DataPreparationHelper {
         return DataPreparationHelperImpl()
     }
+
+    @Provides
+    @Singleton
+    fun provideStocksAdapter(): StocksAdapter = StocksAdapter()
+
+    @Provides
+    @Singleton
+    fun provideSearchHistoryService(): UserSearchHistoryService = UserSearchHistoryService()
 }

@@ -19,7 +19,7 @@
 
     <dimen name="stocks_rv_layout_width">0dp</dimen>
     <dimen name="stocks_rv_layout_height">0dp</dimen>
-    <dimen name="stocks_rv_marginTop">20dp</dimen>
+    <dimen name="stocks_rv_marginTop">136dp</dimen>
 
     <dimen name="stocks_rv_element_marginHorizontal">16dp</dimen>
     <dimen name="stocks_rv_element_marginVertical">4dp</dimen>
@@ -48,4 +48,30 @@
 
     <dimen name="stocks_rv_element_dayChange_textSize">12sp</dimen>
     <dimen name="stocks_rv_element_dayChange_marginEnd">12dp</dimen>
+
+    <dimen name="staggered_custom_view_marginTop">11dp</dimen>
+
+    <dimen name="searched_for_this_textSize">18sp</dimen>
+    <dimen name="searched_for_this_marginStart">20dp</dimen>
+    <dimen name="searched_for_this_marginTop">28dp</dimen>
+
+    <dimen name="on_search_tv_stocks_marginStart">20dp</dimen>
+    <dimen name="on_search_tv_stocks_marginTop">32dp</dimen>
+    <dimen name="on_search_tv_stocks_textSize">18sp</dimen>
+
+    <dimen name="on_search_tv_show_more_textSize">12sp</dimen>
+    <dimen name="on_search_tv_show_more_marginTop">36dp</dimen>
+    <dimen name="on_search_tv_show_more_marginEnd">20dp</dimen>
+
+    <dimen name="staggered_custom_view_layout_marginStart">16dp</dimen>
+    <dimen name="staggered_custom_view_layout_recyclerview_height">88dp</dimen>
+
+    <dimen name="staggered_custom_view_item_layout_height">48dp</dimen>
+    <dimen name="staggered_custom_view_item_layout_marginEnd">4dp</dimen>
+    <dimen name="staggered_custom_view_item_layout_marginBottom">8dp</dimen>
+    <dimen name="staggered_custom_view_item_height">40dp</dimen>
+    <dimen name="staggered_custom_view_item_cardView_cardElevation">0dp</dimen>
+    <dimen name="staggered_custom_view_item_paddingVertical">12dp</dimen>
+    <dimen name="staggered_custom_view_item_paddingHorizontal">16dp</dimen>
+    <dimen name="staggered_custom_view_item_textSize">12sp</dimen>
 </resources>

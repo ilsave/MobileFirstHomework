@@ -23,6 +23,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -66,4 +67,7 @@ dependencies {
 
     // Glide (for pictures)
     implementation 'com.github.bumptech.glide:glide:4.14.2'
+
+    // Flexbox
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }
