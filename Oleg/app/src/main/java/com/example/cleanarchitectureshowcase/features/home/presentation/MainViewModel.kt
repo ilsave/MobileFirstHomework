@@ -31,6 +31,8 @@ class MainViewModel @Inject constructor(
 
     val searchFocusState = MutableStateFlow<SearchScreenState?>(null)
 
+    val history = MutableStateFlow<List<String>?>(null)
+
     private fun getStocksData() {
         viewModelScope.launch {
             val result = getStocksDataUsecase.invoke("Params")
@@ -71,15 +73,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addToSearchHistory(query: String?, adapter: StaggeredAdapter) {
-        if (query != null && !userSearchHistoryService.containsSearchQuery(query)) {
+    fun addToSearchHistory(query: String) {
+        if (!userSearchHistoryService.containsSearchQuery(query)) {
             userSearchHistoryService.add(query)
-            setDataInStaggeredAdapter(userSearchHistoryService.getSearchHistory(), adapter)
+            history.value = userSearchHistoryService.getSearchHistory()
         }
-    }
-
-    private fun setDataInStaggeredAdapter(data: List<String>, adapter: StaggeredAdapter) {
-        adapter.setData(data)
     }
 
     fun setTextInEditText(editText: EditText, text: String) {

@@ -12,7 +12,7 @@ class UserSearchHistoryService() {
     }
 
     fun getSearchHistory(): List<String> {
-        return searchHistory
+        return searchHistory.toList()
     }
 
     fun containsSearchQuery(query: String): Boolean {

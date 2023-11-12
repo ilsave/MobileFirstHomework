@@ -38,15 +38,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         // mock data for popular requests
-        binding.popularRequests.setItems(resources.getStringArray(R.array.popular_requests).asList())
+        binding.popularRequests.adapter.setData(resources.getStringArray(R.array.popular_requests).asList())
 
         binding.popularRequests.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
             override fun onItemClick(position: Int) {
-                //binding.etSearch.setText()
-                viewModel.setTextInEditText(editText = binding.etSearch, text = binding.popularRequests.adapter.getItem(position))
-                viewModel.addToSearchHistory(binding.etSearch.text.toString(), binding.searchedForThis.adapter)
+                binding.etSearch.setText(binding.popularRequests.adapter.getItem(position))
+                viewModel.addToSearchHistory(binding.etSearch.text.toString())
             }
         })
+
+        lifecycleScope.launch {
+            viewModel.history.collect { history ->
+                    history?.let {
+                        binding.searchedForThis.adapter.setData(it)
+                    }
+            }
+        }
 
         binding.searchedForThis.adapter.setOnItemClickListener(object : StaggeredRecyclerViewInterface {
             override fun onItemClick(position: Int) {
@@ -80,7 +87,8 @@ class MainActivity : AppCompatActivity() {
                 if (binding.etSearch.text.isNullOrEmpty()) {
                     return false
                 }
-                viewModel.addToSearchHistory(binding.etSearch.text.toString(), binding.searchedForThis.adapter)
+
+                viewModel.addToSearchHistory(binding.etSearch.text.toString())
                 return true
             }
         })
